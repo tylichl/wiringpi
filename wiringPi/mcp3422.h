@@ -21,10 +21,15 @@
  ***********************************************************************
  */
 
-#define	MCP3422_SR_3_75	0
-#define	MCP3422_SR_15	1
-#define	MCP3422_SR_60	2
-#define	MCP3422_SR_240	3
+#define	MCP3422_SR_240	0
+#define	MCP3422_SR_60	1
+#define	MCP3422_SR_15	2
+#define	MCP3422_SR_3_75	3
+
+#define	MCP3422_BITS_12	0
+#define	MCP3422_BITS_14	1
+#define	MCP3422_BITS_16	2
+#define	MCP3422_BITS_18	3
 
 #define	MCP3422_GAIN_1	0
 #define	MCP3422_GAIN_2	1

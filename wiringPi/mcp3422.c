@@ -59,26 +59,50 @@ int myAnalogRead (struct wiringPiNodeStruct *node, int chan)
   {
     case MCP3422_SR_3_75:			// 18 bits
       delay (270) ;
-      read (node->fd, buffer, 4) ;
-      value = ((buffer [0] & 3) << 16) | (buffer [1] << 8) | buffer [0] ;
+
+      do {
+        read (node->fd, buffer, 4) ;
+      }
+      while (buffer[3] & 0x80);
+
+      // manage sign
+      if (buffer[0] & 0x80)
+        value = (0xFF << 24) | (buffer[0] << 16) | (buffer[1] << 8) | buffer[2] ;
+      else
+        value = (0x00 << 24) | (buffer[0] << 16) | (buffer[1] << 8) | buffer[2] ;
       break ;
 
     case MCP3422_SR_15:				// 16 bits
       delay ( 70) ;
-      read (node->fd, buffer, 3) ;
-      value = (buffer [0] << 8) | buffer [1] ;
+
+      do {
+        read (node->fd, buffer, 3) ;
+      }
+      while (buffer[2] & 0x80);
+
+      value = (short)((buffer[0] << 8) | buffer[1]);
       break ;
 
     case MCP3422_SR_60:				// 14 bits
       delay ( 17) ;
-      read (node->fd, buffer, 3) ;
-      value = ((buffer [0] & 0x3F) << 8) | buffer [1] ;
+
+      do {
+        read (node->fd, buffer, 3) ;
+      }
+      while (buffer[2] & 0x80);
+
+      value = (short)((buffer[0] << 8) | buffer[1]);
       break ;
 
     case MCP3422_SR_240:			// 12 bits
       delay (  5) ;
-      read (node->fd, buffer, 3) ;
-      value = ((buffer [0] & 0x0F) << 8) | buffer [0] ;
+
+      do {
+        read (node->fd, buffer, 3) ;
+      }
+      while (buffer[2] & 0x80);
+
+      value = (short)((buffer[0] << 8) | buffer[1]);
       break ;
   }
 
@@ -102,6 +126,7 @@ int mcp3422Setup (int pinBase, int i2cAddress, int sampleRate, int gain)
 
   node = wiringPiNewNode (pinBase, 4) ;
 
+  node->fd         = fd;
   node->data0      = sampleRate ;
   node->data1      = gain ;
   node->analogRead = myAnalogRead ;
