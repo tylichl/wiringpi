@@ -204,7 +204,7 @@ int wiringPiI2CSetupInterface (const char *device, int devId)
     return wiringPiFailure (WPI_ALMOST, "Unable to open I2C device: %s\n", strerror (errno)) ;
 
   if (ioctl (fd, I2C_SLAVE, devId) < 0)
-    return wiringPiFailure (WPI_ALMOST, "Unable to select I2C device: %s\n", strerror (errno)) ;
+    return -1;	//wiringPiFailure (WPI_ALMOST, "Unable to select I2C device: %s\n", strerror (errno)) ;
 
   return fd ;
 }
